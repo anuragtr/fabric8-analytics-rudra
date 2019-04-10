@@ -1,6 +1,7 @@
 """Implementation Bigquery builder base."""
 import os
 import time
+import tempfile
 
 from google.cloud import bigquery
 
@@ -18,6 +19,18 @@ class BigqueryBuilder:
         """Initialize the BigqueryBuilder object."""
         self.credential_path = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')\
             or credential_path
+
+        # TODO: temporary Solution ------------------------------------
+
+        tfile = tempfile.NamedTemporaryFile(mode='w+', delete=False)
+        tfile.write(self.credential_path)
+        tfile.flush()
+        tfile.seek(0)
+
+        os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = tfile.name
+
+        # --------------------------------------------------------------
+
 
         os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = self.credential_path
 
